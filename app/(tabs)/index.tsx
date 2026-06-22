@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 40,
     color: "#ffffff",
-    fontFamily: "Monospace",
+    fontFamily: "BricolageGrotesque_800ExtraBold",
     fontWeight: "bold",
     marginBottom: 20,
   },
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000000",
     marginTop: 20,
+    fontFamily: "PlusJakartaSans_500Medium",
   },
   taskItem: {
     fontSize: 18,
@@ -122,9 +123,11 @@ const styles = StyleSheet.create({
   taskItemDone: {
     textDecorationLine: "line-through",
     color: "#e13030",
+    fontFamily: "PlusJakartaSans_500Medium",
   },
   date: {
     fontSize: 17,
+    fontFamily: "PlusJakartaSans_500Medium",
     color: "#rgba(255,255,255,0.72)",
     marginBottom: 4,
   },
