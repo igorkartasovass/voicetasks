@@ -10,12 +10,25 @@ import {
 
 export default function HomeScreen() {
   const [taskText, setTaskText] = useState("");
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<
+    { id: string; text: string; done: boolean }[]
+  >([]);
 
   const addTask = () => {
     if (taskText.trim() === "") return;
-    setTasks([...tasks, taskText]);
+    setTasks([
+      ...tasks,
+      { id: Date.now().toString(), text: taskText, done: false },
+    ]);
     setTaskText("");
+  };
+
+  const toggleTaskDone = (id: string) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task,
+      ),
+    );
   };
 
   return (
@@ -37,8 +50,14 @@ export default function HomeScreen() {
 
       <FlatList
         data={tasks}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.taskItem}>{item}</Text>}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => toggleTaskDone(item.id)}>
+            <Text style={[styles.taskItem, item.done && styles.taskItemDone]}>
+              {item.text}
+            </Text>
+          </TouchableOpacity>
+        )}
       />
     </View>
   );
@@ -59,7 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    borderWidth: 1.5,
+    borderWidth: 1.3,
     borderColor: "#2822e1",
     borderRadius: 30,
     padding: 12,
@@ -89,6 +108,10 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: "#ffffff",
-    fontSize: 30,
+    fontSize: 33.5,
+  },
+  taskItemDone: {
+    textDecorationLine: "line-through",
+    color: "#e13030",
   },
 });
