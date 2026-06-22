@@ -33,6 +33,14 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.date}>
+        {new Date().toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+        })}
+      </Text>
+
       <Text style={styles.title}>My Tasks</Text>
       <TextInput
         style={styles.input}
@@ -68,19 +76,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 80,
     paddingHorizontal: 20,
-    backgroundColor: "#6ea2e3",
+    backgroundColor: "#5571F6",
   },
   title: {
     fontSize: 40,
-    color: "#2822e1",
+    color: "#ffffff",
     fontFamily: "Monospace",
     fontWeight: "bold",
     marginBottom: 20,
   },
   input: {
     borderWidth: 1.3,
-    borderColor: "#2822e1",
+    borderColor: "rgba(255,255,255,0.14)",
     borderRadius: 30,
+    backgroundColor: "rgba(255,255,255,0.14)",
     padding: 12,
     fontSize: 16,
     color: "#000000",
@@ -113,5 +122,10 @@ const styles = StyleSheet.create({
   taskItemDone: {
     textDecorationLine: "line-through",
     color: "#e13030",
+  },
+  date: {
+    fontSize: 17,
+    color: "#rgba(255,255,255,0.72)",
+    marginBottom: 4,
   },
 });
