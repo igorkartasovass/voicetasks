@@ -8,17 +8,29 @@ import {
   View,
 } from "react-native";
 
+import { useTheme } from "@/hooks/use-theme";
+
 export default function HomeScreen() {
   const [taskText, setTaskText] = useState("");
   const [tasks, setTasks] = useState<
-    { id: string; text: string; done: boolean }[]
+    {
+      id: string;
+      text: string;
+      done: boolean;
+      priority: "high" | "medium" | "low";
+    }[]
   >([]);
 
   const addTask = () => {
     if (taskText.trim() === "") return;
     setTasks([
       ...tasks,
-      { id: Date.now().toString(), text: taskText, done: false },
+      {
+        id: Date.now().toString(),
+        text: taskText,
+        done: false,
+        priority: "medium",
+      },
     ]);
     setTaskText("");
   };
@@ -31,9 +43,20 @@ export default function HomeScreen() {
     );
   };
 
+  const cyclePriority = (id: string) => {
+    const order = { high: "medium", medium: "low", low: "high" } as const;
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, priority: order[task.priority] } : task,
+      ),
+    );
+  };
+
+  const theme = useTheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.date}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.date, { color: theme.textMuted }]}>
         {new Date().toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
@@ -41,11 +64,18 @@ export default function HomeScreen() {
         })}
       </Text>
 
-      <Text style={styles.title}>My Tasks</Text>
+      <Text style={[styles.title, { color: theme.text }]}>My Tasks</Text>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {
+            color: theme.text,
+            borderColor: theme.border,
+            backgroundColor: theme.card,
+          },
+        ]}
         placeholder="Type tasks here..."
-        placeholderTextColor="#000000"
+        placeholderTextColor={theme.textMuted}
         value={taskText}
         onChangeText={setTaskText}
       ></TextInput>
@@ -60,10 +90,55 @@ export default function HomeScreen() {
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => toggleTaskDone(item.id)}>
-            <Text style={[styles.taskItem, item.done && styles.taskItemDone]}>
+          <TouchableOpacity
+            style={[
+              styles.card,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+            onPress={() => toggleTaskDone(item.id)}
+          >
+            <View
+              style={[
+                styles.checkbox,
+                { borderColor: theme.border },
+                item.done && {
+                  backgroundColor: theme.accent,
+                  borderColor: theme.accent,
+                },
+              ]}
+            >
+              {item.done && <Text style={styles.checkmark}>✓</Text>}
+            </View>
+            <Text
+              style={[
+                styles.cardText,
+                { color: theme.text },
+                item.done && {
+                  color: theme.textMuted,
+                  textDecorationLine: "line-through",
+                },
+              ]}
+            >
               {item.text}
             </Text>
+            <TouchableOpacity
+              onPress={() => cyclePriority(item.id)}
+              hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
+            >
+              <View
+                style={[
+                  styles.priorityDot,
+                  {
+                    backgroundColor:
+                      item.priority === "high"
+                        ? theme.priorityHigh
+                        : item.priority === "medium"
+                          ? theme.priorityMedium
+                          : theme.priorityLow,
+                  },
+                ]}
+              ></View>
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
       />
@@ -130,5 +205,38 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans_500Medium",
     color: "#rgba(255,255,255,0.72)",
     marginBottom: 4,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  checkmark: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  cardText: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: "PlusJakartaSans_500Medium",
+  },
+  priorityDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginLeft: 8,
   },
 });
