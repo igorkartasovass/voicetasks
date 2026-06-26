@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import { useTheme } from "@/hooks/use-theme";
+import { parseTask } from "@/lib/parseTask";
 
 export default function HomeScreen() {
   const [taskText, setTaskText] = useState("");
@@ -18,18 +19,21 @@ export default function HomeScreen() {
       text: string;
       done: boolean;
       priority: "high" | "medium" | "low";
+      dueDate: Date | null;
     }[]
   >([]);
 
   const addTask = () => {
     if (taskText.trim() === "") return;
+    const parsed = parseTask(taskText);
     setTasks([
       ...tasks,
       {
         id: Date.now().toString(),
-        text: taskText,
+        text: parsed.text,
         done: false,
-        priority: "medium",
+        priority: parsed.priority,
+        dueDate: parsed.dueDate,
       },
     ]);
     setTaskText("");
