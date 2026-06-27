@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -59,7 +61,10 @@ export default function HomeScreen() {
   const theme = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: theme.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Text style={[styles.date, { color: theme.textMuted }]}>
         {new Date().toLocaleDateString("en-US", {
           weekday: "long",
@@ -71,7 +76,7 @@ export default function HomeScreen() {
       <Text style={[styles.title, { color: theme.text }]}>My Tasks</Text>
 
       <FlatList
-        contentContainerStyle={{ paddingBottom: 100 }}
+        style={{ flex: 1 }}
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -161,7 +166,7 @@ export default function HomeScreen() {
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -180,10 +185,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputBar: {
-    position: "absolute",
-    bottom: 30,
-    left: 20,
-    right: 20,
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
@@ -191,6 +192,8 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     paddingRight: 8,
     paddingVertical: 8,
+    marginTop: 10,
+    marginBottom: 10,
   },
   input: {
     flex: 1,
