@@ -69,28 +69,9 @@ export default function HomeScreen() {
       </Text>
 
       <Text style={[styles.title, { color: theme.text }]}>My Tasks</Text>
-      <TextInput
-        style={[
-          styles.input,
-          {
-            color: theme.text,
-            borderColor: theme.border,
-            backgroundColor: theme.card,
-          },
-        ]}
-        placeholder="Type tasks here..."
-        placeholderTextColor={theme.textMuted}
-        value={taskText}
-        onChangeText={setTaskText}
-      ></TextInput>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.addButton} onPress={addTask}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
 
       <FlatList
+        contentContainerStyle={{ paddingBottom: 100 }}
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -113,18 +94,31 @@ export default function HomeScreen() {
             >
               {item.done && <Text style={styles.checkmark}>✓</Text>}
             </View>
-            <Text
-              style={[
-                styles.cardText,
-                { color: theme.text },
-                item.done && {
-                  color: theme.textMuted,
-                  textDecorationLine: "line-through",
-                },
-              ]}
-            >
-              {item.text}
-            </Text>
+
+            <View style={{ flex: 1 }}>
+              <Text
+                style={[
+                  styles.cardText,
+                  { color: theme.text },
+                  item.done && {
+                    color: theme.textMuted,
+                    textDecorationLine: "line-through",
+                  },
+                ]}
+              >
+                {item.text}
+              </Text>
+              {item.dueDate && (
+                <Text style={[styles.date, { color: theme.textMuted }]}>
+                  {item.dueDate?.toLocaleDateString("en-US", {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </Text>
+              )}
+            </View>
+
             <TouchableOpacity
               onPress={() => cyclePriority(item.id)}
               hitSlop={{ top: 14, bottom: 14, left: 14, right: 14 }}
@@ -146,6 +140,27 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
       />
+
+      <View
+        style={[
+          styles.inputBar,
+          { backgroundColor: theme.card, borderColor: theme.border },
+        ]}
+      >
+        <TextInput
+          style={[styles.input, { color: theme.text }]}
+          placeholder="Add a task..."
+          placeholderTextColor={theme.textMuted}
+          value={taskText}
+          onChangeText={setTaskText}
+        />
+        <TouchableOpacity
+          style={[styles.addButton, { backgroundColor: theme.accent }]}
+          onPress={addTask}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -164,50 +179,39 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  input: {
-    borderWidth: 1.3,
-    borderColor: "rgba(255,255,255,0.14)",
+  inputBar: {
+    position: "absolute",
+    bottom: 30,
+    left: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
     borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.14)",
-    padding: 12,
+    paddingLeft: 18,
+    paddingRight: 8,
+    paddingVertical: 8,
+  },
+  input: {
+    flex: 1,
     fontSize: 16,
-    color: "#000000",
-    marginTop: 20,
     fontFamily: "PlusJakartaSans_500Medium",
   },
-  taskItem: {
-    fontSize: 18,
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#2822e1",
-  },
-  buttonRow: {
-    alignItems: "center",
-    marginTop: 16,
-  },
   addButton: {
-    width: 65,
-    height: 65,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#2822e1",
-    padding: 12,
     borderRadius: 30,
-    marginTop: 20,
   },
   addButtonText: {
     color: "#ffffff",
-    fontSize: 33.5,
-  },
-  taskItemDone: {
-    textDecorationLine: "line-through",
-    color: "#e13030",
-    fontFamily: "PlusJakartaSans_500Medium",
+    fontSize: 28,
   },
   date: {
     fontSize: 17,
     fontFamily: "PlusJakartaSans_500Medium",
-    color: "#rgba(255,255,255,0.72)",
+    color: "rgba(255,255,255,0.72)",
     marginBottom: 4,
   },
   card: {
@@ -242,5 +246,10 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginLeft: 8,
+  },
+  dueDate: {
+    fontSize: 13,
+    marginTop: 2,
+    fontFamily: "PlusJakartaSans_400Regular",
   },
 });
