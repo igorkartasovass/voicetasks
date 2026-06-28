@@ -59,6 +59,8 @@ export default function HomeScreen() {
   };
 
   const theme = useTheme();
+  const doneCount = tasks.filter((t) => t.done).length;
+  const progress = tasks.length > 0 ? doneCount / tasks.length : 0;
 
   return (
     <KeyboardAvoidingView
@@ -74,6 +76,29 @@ export default function HomeScreen() {
       </Text>
 
       <Text style={[styles.title, { color: theme.text }]}>My Tasks</Text>
+
+      {tasks.length > 0 && (
+        <View style={styles.progressSection}>
+          <View style={styles.progressHeader}>
+            <Text style={[styles.progressLabel, { color: theme.textMuted }]}>
+              Today's Progress
+            </Text>
+            <Text style={[styles.progressPercent, { color: theme.accent }]}>
+              {Math.round(progress * 100)}%
+            </Text>
+          </View>
+          <View
+            style={[styles.progressTrack, { backgroundColor: theme.border }]}
+          >
+            <View
+              style={[
+                styles.progressFill,
+                { backgroundColor: theme.accent, width: `${progress * 100}%` },
+              ]}
+            />
+          </View>
+        </View>
+      )}
 
       <FlatList
         style={{ flex: 1 }}
@@ -254,5 +279,30 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 2,
     fontFamily: "PlusJakartaSans_400Regular",
+  },
+  progressSection: {
+    marginBottom: 20,
+  },
+  progressHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  progressLabel: {
+    fontSize: 14,
+    fontFamily: "PlusJakartaSans_500Medium",
+  },
+  progressPercent: {
+    fontSize: 16,
+    fontFamily: "PlusJakartaSans_700Bold",
+  },
+  progressTrack: {
+    height: 8,
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 4,
   },
 });
