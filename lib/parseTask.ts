@@ -17,7 +17,7 @@ export function parseTask(input: string): ParsedTask {
   if (/\b(urgent|asap|important|high priority)\b/i.test(working)) {
     priority = "high";
     working = working
-      .replace(/\b(low priority|whenever|someday)\b/i, "")
+      .replace(/\b(urgent|asap|important|high priority)\b/i, "")
       .trim();
   } else if (/\b(low priority|whenever|someday)\b/i.test(working)) {
     priority = "low";
@@ -40,7 +40,7 @@ export function parseTask(input: string): ParsedTask {
   }
 
   //tidy whitespace leftover
-  const text = working.replace(/\s+g/, " ").trim() || input.trim();
+  const text = working.replace(/\s+/g, " ").trim() || input.trim();
 
   return { text, dueDate, priority };
 }
